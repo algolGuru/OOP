@@ -9,25 +9,25 @@ if %MyProgram%=="" (
 	exit /B 1
 )
 
-REM Copy empty file
+REM Try to copy empty file. Waited result - emty output
 %MyProgram% "EmptyFile.txt" "output.txt" || goto err
 fc "%~dp0EmptyFile.txt" "%~dp0output.txt" || goto err
 echo Test 1 passed
 
-REM Copy non empty file
+REM Try to copy non empty file. Waited result - non emty output
 %MyProgram% "File.txt" "output.txt" || goto err
 fc "%~dp0File.txt" "%~dp0output.txt" || goto err
 echo Test 2 passed
 
-REM Copy missing file should fail
+REM Try to copy non existed file. Waited result - error
 %MyProgram% "MissingFile.txt" "output.txt" && goto err
 echo Test 3 passed
 
-REM If	output file is not specified, program must fail
-%MyProgram%  "MissingFile.txt" && goto err
+REM A single argument is passed to the parameters. Waited result - error
+%MyProgram%  "File.txt" && goto err
 echo Test 4 passed
 
-REM If input and output files are not specified, program must fail
+REM A no arguments is passed to the parameters. Waited result - error
 %MyProgram% && goto err
 echo Test 5 passed
 
