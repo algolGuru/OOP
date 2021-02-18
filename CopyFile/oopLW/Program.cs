@@ -6,17 +6,18 @@ namespace oopLW
 {
     class Program
     {
-        const string pathToDir = @"C:\Users\gleba\source\repos\oopLW\oopLW\";
+        const string backslash = @"\";
 
         static void Main( string[] args )
         {
 
             if( args.Count() < 2 || args.Count() > 2 )
-                throw new Exception("Invalid count of parameters ");
+                throw new Exception( "Invalid count of parameters " );
 
-            var inputFilePath = pathToDir + args[ 0 ];
-            var outputFilePath = pathToDir + args[ 1 ];
-            if ( inputFilePath != outputFilePath )
+            var inputFilePath = Directory.GetCurrentDirectory() + backslash + args[ 0 ];
+            var outputFilePath = Directory.GetCurrentDirectory() + backslash + args[ 1 ];
+
+            if( inputFilePath != outputFilePath )
                 CopyFile( inputFilePath, outputFilePath );
         }
 
@@ -24,13 +25,13 @@ namespace oopLW
         {
             try
             {
-                var input = File.ReadAllLines( inputFilePath );
+                var inputData = File.ReadAllLines( inputFilePath );
                 var outputFile = File.CreateText( outputFilePath );
 
-                CopyTextInFile( input, outputFile );
+                CopyTextInFile( inputData, outputFile );
                 outputFile.Close();
             }
-            catch (Exception exeption)
+            catch( Exception exeption )
             {
                 throw exeption;
             }
