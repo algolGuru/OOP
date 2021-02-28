@@ -10,41 +10,44 @@ namespace oopLW
 
         static void Main( string[] args )
         {
-
-            if( args.Count() < 2 || args.Count() > 2 )
+            if( args.Count() != 2 )
+            {
                 throw new Exception( "Invalid count of parameters " );
+            }
 
             var inputFilePath = Directory.GetCurrentDirectory() + backslash + args[ 0 ];
             var outputFilePath = Directory.GetCurrentDirectory() + backslash + args[ 1 ];
 
             if( inputFilePath != outputFilePath )
-                CopyFile( inputFilePath, outputFilePath );
+            {
+                try
+                {
+                    CopyFile( inputFilePath, outputFilePath );
+                }
+                catch( Exception )
+                {
+                    throw new ArgumentException( "unable to copy file" );
+                }
+            }
         }
 
         private static void CopyFile( string inputFilePath, string outputFilePath )
         {
-            try
-            {
-                var inputData = File.ReadAllLines( inputFilePath );
-                var outputFile = File.CreateText( outputFilePath );
+            var outputFile = File.CreateText( outputFilePath );
+            var inputFile = new StreamReader( inputFilePath );
 
-                CopyTextInFile( inputData, outputFile );
-                outputFile.Close();
-            }
-            catch( Exception exeption )
+            while( !inputFile.EndOfStream )
             {
-                throw exeption;
-            }
-        }
+                var line = inputFile.ReadLine();
 
-        private static void CopyTextInFile( string[] text, StreamWriter file )
-        {
-            foreach( var inputLine in text )
-            {
-                file.Write( inputLine );
-                if( inputLine.Contains( '\n' ) )
-                    file.WriteLine();
+                outputFile.Write( line );
+                if( line.Contains( '\n' ) )
+                {
+                    outputFile.WriteLine();
+                }
             }
+
+            outputFile.Close();
         }
     }
 }
