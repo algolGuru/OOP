@@ -11,15 +11,23 @@ namespace Fndtext
         static void Main( string[] args )
         {
             if( args.Count() != 2 )
-                throw new Exception( "Invalid count of parameters " );
+            {
+                Console.WriteLine( "Invalid count of parameters" );
+                return;
+            }
 
             var inputFilePath = Directory.GetCurrentDirectory() + backslash + args[ 0 ];
             var findingText = args[ 1 ];
 
             if( File.Exists( inputFilePath ) )
+            {
                 FindAllOccurrences( inputFilePath, ref findingText );
+            }
             else
-                throw new Exception( "File " + args[ 0 ] + " does not exist" );
+            {
+                Console.WriteLine( "File does not exist" );
+                return;
+            }
         }
 
         public static void FindAllOccurrences( string inputFilePath, ref string findingText )

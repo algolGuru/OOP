@@ -8,8 +8,11 @@ namespace flipbyte
         static void Main( string[] args )
         {
             if( args.Count() != 1 )
-                throw new Exception( "Invalid count of params" );
-            
+            {
+                Console.WriteLine( "Invalid count of params" );
+                return;
+            }
+
             int inputByte;
             try
             {
@@ -17,14 +20,19 @@ namespace flipbyte
             }
             catch
             {
-                throw new Exception( "Input data is not correct" );
+                Console.WriteLine( "Invalid input data" );
+                return;
             }
 
             int result;
+
             if( ( inputByte >= 0 ) && ( inputByte <= 255 ) )
                 result = ReverseBits( inputByte );
             else
-                throw new Exception( "Input data more then 1 byte" );
+            {
+                Console.WriteLine( "Input data more than 1 byte" );
+                return;
+            }
 
             Console.WriteLine( result );
         }
