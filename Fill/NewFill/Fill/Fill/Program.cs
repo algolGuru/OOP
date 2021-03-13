@@ -1,12 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace Fill
 {
+    public enum WasError : int
+    {
+        NoError = 1,
+        InvalidCountOfParamsError = 2,
+        InputFileNotFoundError = 3
+    }
+
     public static class Program
     {
+        const string OutputFileNameIfErrorHandled = "Output.txt";
+        const string Backslash = @"\";
         public const int MaxMatrixSize = 99;
         public struct Point
         {
@@ -34,13 +42,41 @@ namespace Fill
 
         static void Main( string[] args )
         {
-            var input = File.ReadAllLines( "../../../input.txt" );
-            var matrixParameters = new MatrixParameters( 0, 0 );
-            var matrix = GetMatrix( input, ref matrixParameters );
-            var points = GetPaintPoints( matrix, matrixParameters );
-            matrix = Paint( matrix, matrixParameters, points );
-            WriteInOutputFile( matrix, "../../../output.txt" );
+            WasError wasError = WasError.NoError;
+            string inputFilePath = "";
+            string outputFilePath = "";
+            if( args.Count() != 2 )
+            {
+                wasError = WasError.InvalidCountOfParamsError;
+            }
+            else
+            {
+                inputFilePath = Directory.GetCurrentDirectory() + Backslash + args[ 0 ];
+                outputFilePath = Directory.GetCurrentDirectory() + Backslash + args[ 1 ];
+            }
 
+            string[] input = new string[] { };
+            if( File.Exists( inputFilePath ) )
+            {
+                input = File.ReadAllLines( inputFilePath );
+            }
+            else if( wasError == WasError.NoError )
+            {
+                wasError = WasError.InputFileNotFoundError;
+            }
+
+            if (wasError == WasError.NoError )
+            {
+                var matrixParameters = new MatrixParameters( 0, 0 );
+                var matrix = GetMatrix( input, ref matrixParameters );
+                var points = GetPaintPoints( matrix, matrixParameters );
+                matrix = Paint( matrix, matrixParameters, points );
+                WriteMatrixInOutputFile( matrix, outputFilePath );
+            }
+            else
+            {
+                WriteErrorInOutputFile( wasError, Directory.GetCurrentDirectory() + Backslash + OutputFileNameIfErrorHandled );
+            }
         }
 
         public static List<List<char>> GetMatrix( string[] inputData, ref MatrixParameters matrixParameters )
@@ -158,7 +194,7 @@ namespace Fill
             {
                 if( matrix[ element.Y ][ element.X + 1 ] == ' ' )
                 {
-                    if ( !queu.ToList().Contains( new Point( element.Y, element.X + 1 ) ) )
+                    if( !queu.ToList().Contains( new Point( element.Y, element.X + 1 ) ) )
                         queu.Enqueue( new Point( element.Y, element.X + 1 ) );
                 }
             }
@@ -170,7 +206,7 @@ namespace Fill
             {
                 if( matrix[ element.Y + 1 ][ element.X ] == ' ' )
                 {
-                    if ( !queu.ToList().Contains( new Point( element.Y + 1, element.X ) ) )
+                    if( !queu.ToList().Contains( new Point( element.Y + 1, element.X ) ) )
                         queu.Enqueue( new Point( element.Y + 1, element.X ) );
                 }
             }
@@ -182,7 +218,7 @@ namespace Fill
             {
                 if( matrix[ element.Y ][ element.X - 1 ] == ' ' )
                 {
-                    if ( !queu.ToList().Contains( new Point( element.Y, element.X - 1 ) ) )
+                    if( !queu.ToList().Contains( new Point( element.Y, element.X - 1 ) ) )
                         queu.Enqueue( new Point( element.Y, element.X - 1 ) );
                 }
             }
@@ -194,14 +230,14 @@ namespace Fill
             {
                 if( matrix[ element.Y - 1 ][ element.X ] == ' ' )
                 {
-                    if ( !queu.ToList().Contains( new Point( element.Y - 1, element.X ) ) ) { }
+                    if( !queu.ToList().Contains( new Point( element.Y - 1, element.X ) ) )
                         queu.Enqueue( new Point( element.Y - 1, element.X ) );
                 }
             }
         }
 
 
-        public static void WriteInOutputFile( List<List<char>> result, string filePath )
+        public static void WriteMatrixInOutputFile( List<List<char>> result, string filePath )
         {
             StreamWriter streamWriter = File.CreateText( filePath );
             foreach( var line in result )
@@ -212,6 +248,27 @@ namespace Fill
                 }
                 streamWriter.WriteLine();
             }
+            streamWriter.Close();
+        }
+
+        public static void WriteErrorInOutputFile( WasError error, string filePath )
+        {
+            StreamWriter streamWriter = File.CreateText( filePath );
+
+            switch( error )
+            {
+                case WasError.InputFileNotFoundError:
+                {
+                    streamWriter.Write( "Input file not found " );
+                    break;
+                } 
+                case WasError.InvalidCountOfParamsError:
+                {
+                    streamWriter.Write( "Invalid count of parameters " );
+                    break;
+                }
+            }
+
             streamWriter.Close();
         }
     }

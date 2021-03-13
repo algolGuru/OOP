@@ -5,4 +5,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="&quot;$(ProjectDir)test.bat&quot; &quot;$(TargetDir)$(ProjectName).exe&quot;&#xD;&#xA;" />
+  </Target>
+
 </Project>
