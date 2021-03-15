@@ -9,9 +9,9 @@ if %MyProgram%=="" (
 	exit /B 1
 )
 
-echo Try to find the contained text. Waited result - 2 and 5 line
+echo Try to find the contained text. Waited result - 2 and 4 line
 %MyProgram% "File.txt" "my name" > "%~dp0Output.txt" || goto err
-fc "%~dp0Output.txt" "%~dp0TextIsFindedAt2And5Line.txt" || goto err
+fc "%~dp0Output.txt" "%~dp0TextIsFindedAt2And4Line.txt" || goto err
 echo Test 1 passed
 
 echo Try to find the missing text. Waited result - text not found

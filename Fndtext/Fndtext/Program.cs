@@ -30,6 +30,7 @@ namespace Fndtext
             }
         }
 
+        // string 
         public static void FindAllOccurrences( string inputFilePath, ref string findingText )
         {
             var fileReader = new StreamReader( inputFilePath );
@@ -50,7 +51,9 @@ namespace Fndtext
             }
 
             if( textIsContainsInFile == false )
+            {
                 Console.WriteLine( "Text not found" );
+            }
         }
     }
 }

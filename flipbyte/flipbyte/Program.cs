@@ -27,7 +27,9 @@ namespace flipbyte
             int result;
 
             if( ( inputByte >= 0 ) && ( inputByte <= 255 ) )
+            {
                 result = ReverseBits( inputByte );
+            }
             else
             {
                 Console.WriteLine( "Input data more than 1 byte" );
