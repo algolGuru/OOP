@@ -39,11 +39,6 @@ echo "Start program with doesn't exist input file. Waited result - input file no
 fc "%~dp0Output.txt" "%~dp0OutputInputFileNotFoundError.txt" || goto err
 echo Test 6 passed
 
-echo "Start program with 1 argument. Waited result - Invalid count of parameters "
-%MyProgram% || goto err
-fc "%~dp0Output.txt" "%~dp0OutputForInvalidCountOfParameters.txt" || goto err
-echo Test 7 passed
-
 echo All tests passed successfully
 exit /B 0
 

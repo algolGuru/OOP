@@ -66,7 +66,26 @@ namespace MultiMatrix
                 matrix.Add( floatNumbersLine );
             }
 
+            if( !Is3x3( matrix ) )
+            {
+                return true;
+            }
+
             return false;
+        }
+
+        public static bool Is3x3( List<List<float>> matrix )
+        {
+            if( matrix.Count != 3 )
+                return false;
+
+            for( int i = 0; i < 3; i++ )
+            {
+                if( matrix[ i ].Count != 3 )
+                    return false;
+            }
+
+            return true;
         }
 
         public static List<List<float>> MulitiMatrix( List<List<float>> firstMatrix, List<List<float>> secondMatrix )
@@ -111,7 +130,7 @@ namespace MultiMatrix
             {
                 foreach( var item in line )
                 {
-                    Console.Write( item.ToString("F3") + "\t" );
+                    Console.Write( item.ToString( "F3" ) + "\t" );
                 }
 
                 Console.WriteLine();

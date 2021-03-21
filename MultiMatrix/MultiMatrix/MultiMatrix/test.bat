@@ -14,9 +14,9 @@ echo Try to multiplicate matrixes . Waited result - valid output matrix
 fc "%~dp0Output.txt" "%~dp0ValidOutput.txt" || goto err
 echo Test 1 passed
 
-echo Try to multiplicate matrixes. Waited result - another valid output matrix
+echo Try to multiplicate matrixes. Waited result - float numbers output matrix
 %MyProgram% FloatNumbersInput.txt FloatNumbersInput.txt > "%~dp0Output.txt" || goto err
-fc "%~dp0Output.txt" "%~dp0AnoutherValidOutput.txt" || goto err
+fc "%~dp0Output.txt" "%~dp0FloatNumbersOutput.txt" || goto err
 echo Test 2 passed
 
 echo Try to multiplicate matrixes with invalid data. Waited result - invalid data output
@@ -35,7 +35,7 @@ fc "%~dp0Output.txt" "%~dp0InvalidOutput.txt" || goto err
 echo Test 5 passed
 
 
-%MyProgram% FloatNumbersInput.txt FloatNumbersInput.txt > "%~dp0Output.txt" || goto err
+%MyProgram% TextFile1.txt TextFile2.txt || goto err
 
 echo All tests passed successfully
 exit /B 0

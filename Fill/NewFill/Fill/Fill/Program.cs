@@ -13,7 +13,6 @@ namespace Fill
 
     public static class Program
     {
-        const string OutputFileNameIfErrorHandled = "Output.txt";
         const string Backslash = @"\";
         public const int MaxMatrixSize = 99;
         public struct Point
@@ -28,92 +27,105 @@ namespace Fill
             public int X;
         }
 
-        public struct MatrixParameters
+        public struct ImageParameters
         {
-            public MatrixParameters( int matrixHeight, int matrixWidth )
+            public ImageParameters( int imageHeight, int imageWidth )
             {
-                MatrixHeight = matrixHeight;
-                MatrixWidth = matrixWidth;
+                ImageHeight = imageHeight;
+                ImageWidth = imageWidth;
             }
 
-            public int MatrixHeight;
-            public int MatrixWidth;
+            public int ImageHeight;
+            public int ImageWidth;
         }
 
         static void Main( string[] args )
         {
-            WasError wasError = WasError.NoError;
-            string inputFilePath = "";
-            string outputFilePath = "";
-            if( args.Count() != 2 )
-            {
-                wasError = WasError.InvalidCountOfParamsError;
-            }
-            else
-            {
-                inputFilePath = Directory.GetCurrentDirectory() + Backslash + args[ 0 ];
-                outputFilePath = Directory.GetCurrentDirectory() + Backslash + args[ 1 ];
-            }
+            var inputData = new string[] { };
+            var outputFilePath = "";
+            WasError wasError = ReadInputParameters( args, ref inputData, ref outputFilePath );
 
-            string[] input = new string[] { };
-            if( File.Exists( inputFilePath ) )
+            if( wasError == WasError.NoError )
             {
-                input = File.ReadAllLines( inputFilePath );
-            }
-            else if( wasError == WasError.NoError )
-            {
-                wasError = WasError.InputFileNotFoundError;
-            }
-
-            if (wasError == WasError.NoError )
-            {
-                var matrixParameters = new MatrixParameters( 0, 0 );
-                var matrix = GetMatrix( input, ref matrixParameters );
-                var points = GetPaintPoints( matrix, matrixParameters );
-                matrix = Paint( matrix, matrixParameters, points );
+                var imageParameters = new ImageParameters( 0, 0 );
+                var matrix = GetMatrix( inputData, ref imageParameters );
+                var points = GetPaintPoints( matrix, imageParameters );
+                matrix = Paint( matrix, imageParameters, points );
                 WriteMatrixInOutputFile( matrix, outputFilePath );
             }
             else
             {
-                WriteErrorInOutputFile( wasError, Directory.GetCurrentDirectory() + Backslash + OutputFileNameIfErrorHandled );
+                WriteErrorInOutputFile( wasError, outputFilePath );
             }
         }
 
-        public static List<List<char>> GetMatrix( string[] inputData, ref MatrixParameters matrixParameters )
+        public static List<List<char>> GetMatrix( string[] inputData, ref ImageParameters imageParameters )
         {
             var matrix = new List<List<char>>();
-            matrixParameters.MatrixHeight = 0;
+            imageParameters.ImageHeight = 0;
+            var maxImageWidth = 0;
 
             foreach( var line in inputData )
             {
-                if( matrixParameters.MatrixHeight <= MaxMatrixSize )
+                if( imageParameters.ImageHeight <= MaxMatrixSize )
                 {
                     var tempLine = new List<char>();
-                    matrixParameters.MatrixWidth = 0;
+                    imageParameters.ImageWidth = 0;
 
                     foreach( var symbol in line )
                     {
-                        if( matrixParameters.MatrixWidth <= MaxMatrixSize )
+                        if( imageParameters.ImageWidth <= MaxMatrixSize )
                         {
                             tempLine.Add( symbol );
-                            matrixParameters.MatrixWidth++;
+                            imageParameters.ImageWidth++;
+                            if( imageParameters.ImageWidth > maxImageWidth )
+                            {
+                                maxImageWidth = imageParameters.ImageWidth;
+                            }
                         }
                     }
                     matrix.Add( tempLine );
-                    matrixParameters.MatrixHeight++;
+                    imageParameters.ImageHeight++;
                 }
             }
+            var newMatrix = FillMatrix( matrix, maxImageWidth );
 
-            return matrix;
+            return newMatrix;
         }
 
-        public static List<Point> GetPaintPoints( List<List<char>> matrix, MatrixParameters matrixParameters )
+        public static List<List<char>> FillMatrix( List<List<char>> matrix, int maxImageWidth )
+        {
+            var newMatrix = new List<List<char>>();
+            foreach( var line in matrix )
+            {
+                var counter = 0;
+                List<char> tempLine = new List<char>();
+                foreach( var element in line )
+                {
+                    if( counter == line.Count - 1 )
+                    {
+                        while( counter != maxImageWidth - 1 )
+                        {
+                            tempLine.Add( ' ' );
+                            counter++;
+                        }
+                    }
+                    tempLine.Add( element );
+                    counter++;
+                }
+                newMatrix.Add( tempLine );
+            }
+
+            return newMatrix;
+        }
+
+        public static List<Point> GetPaintPoints( List<List<char>> matrix, ImageParameters imageParameters )
         {
             var points = new List<Point>();
 
-            for( int i = 0; i < matrixParameters.MatrixHeight; i++ )
+            for( int i = 0; i < imageParameters.ImageHeight; i++ )
             {
-                for( int j = 0; j < matrixParameters.MatrixWidth; j++ )
+                for( int j = 0; j < imageParameters.ImageWidth; j++ )
                 {
                     if( matrix[ i ][ j ] == 'O' )
                     {
@@ -125,9 +137,9 @@ namespace Fill
             return points;
         }
 
-        public static List<List<char>> Paint( List<List<char>> matrix, MatrixParameters matrixParameters, List<Point> points )
+        public static List<List<char>> Paint( List<List<char>> matrix, ImageParameters imageParameters, List<Point> points )
         {
-            var fullMatrix = GetFullSizeMatrix( matrix, matrixParameters );
+            var fullMatrix = GetFullSizeMatrix( matrix, imageParameters );
 
             foreach( var point in points )
             {
@@ -137,7 +149,7 @@ namespace Fill
             return ( fullMatrix );
         }
 
-        public static List<List<char>> GetFullSizeMatrix( List<List<char>> matrix, MatrixParameters matrixParameters )
+        public static List<List<char>> GetFullSizeMatrix( List<List<char>> matrix, ImageParameters imageParameters )
         {
             var fullMatrix = new List<List<char>>();
 
@@ -147,13 +159,13 @@ namespace Fill
 
                 for( int j = 0; j <= MaxMatrixSize; j++ )
                 {
-                    if( matrixParameters.MatrixHeight <= i )
+                    if( imageParameters.ImageHeight <= i )
                     {
                         tempLine.Add( ' ' );
                     }
                     else
                     {
-                        if( matrixParameters.MatrixWidth <= j )
+                        if( imageParameters.ImageWidth <= j )
                         {
                             tempLine.Add( ' ' );
                         }
@@ -174,13 +186,14 @@ namespace Fill
         {
             var queue = new Queue<Point>();
             queue.Enqueue( point );
-
-            while( queue.ToArray().Length != 0 )
+            while( queue.Count() != 0 )
             {
                 var element = queue.Dequeue();
+
                 if( matrix[ element.Y ][ element.X ] != 'O' )
                     matrix[ element.Y ][ element.X ] = '.';
-
+                if( matrix[ element.Y ][ element.X ] == '.' )
+                    continue;
                 GoRight( element, matrix, queue );
                 GoDown( element, matrix, queue );
                 GoLeft( element, matrix, queue );
@@ -194,8 +207,8 @@ namespace Fill
             {
                 if( matrix[ element.Y ][ element.X + 1 ] == ' ' )
                 {
-                    if( !queu.ToList().Contains( new Point( element.Y, element.X + 1 ) ) )
-                        queu.Enqueue( new Point( element.Y, element.X + 1 ) );
+                    var point = new Point( element.Y, element.X + 1 );
+                    queu.Enqueue( point );
                 }
             }
         }
@@ -206,8 +219,7 @@ namespace Fill
             {
                 if( matrix[ element.Y + 1 ][ element.X ] == ' ' )
                 {
-                    if( !queu.ToList().Contains( new Point( element.Y + 1, element.X ) ) )
-                        queu.Enqueue( new Point( element.Y + 1, element.X ) );
+                    queu.Enqueue( new Point( element.Y + 1, element.X ) );
                 }
             }
         }
@@ -218,8 +230,8 @@ namespace Fill
             {
                 if( matrix[ element.Y ][ element.X - 1 ] == ' ' )
                 {
-                    if( !queu.ToList().Contains( new Point( element.Y, element.X - 1 ) ) )
-                        queu.Enqueue( new Point( element.Y, element.X - 1 ) );
+                    var point = new Point( element.Y, element.X - 1 );
+                    queu.Enqueue( point );
                 }
             }
         }
@@ -230,12 +242,11 @@ namespace Fill
             {
                 if( matrix[ element.Y - 1 ][ element.X ] == ' ' )
                 {
-                    if( !queu.ToList().Contains( new Point( element.Y - 1, element.X ) ) )
-                        queu.Enqueue( new Point( element.Y - 1, element.X ) );
+                    var point = new Point( element.Y - 1, element.X );
+                    queu.Enqueue( point );
                 }
             }
         }
-
 
         public static void WriteMatrixInOutputFile( List<List<char>> result, string filePath )
         {
@@ -261,7 +272,7 @@ namespace Fill
                 {
                     streamWriter.Write( "Input file not found " );
                     break;
-                } 
+                }
                 case WasError.InvalidCountOfParamsError:
                 {
                     streamWriter.Write( "Invalid count of parameters " );
@@ -270,6 +281,30 @@ namespace Fill
             }
 
             streamWriter.Close();
+        }
+
+        public static WasError ReadInputParameters( string[] args, ref string[] inputData, ref string outputFilePath )
+        {
+            WasError wasError = WasError.NoError;
+            string inputFilePath;
+            if( args.Count() != 2 )
+            {
+                return WasError.InvalidCountOfParamsError;
+            }
+
+            inputFilePath = Directory.GetCurrentDirectory() + Backslash + args[ 0 ];
+            outputFilePath = Directory.GetCurrentDirectory() + Backslash + args[ 1 ];
+
+            if( File.Exists( inputFilePath ) )
+            {
+                inputData = File.ReadAllLines( inputFilePath );
+            }
+            else if( wasError == WasError.NoError )
+            {
+                return WasError.InputFileNotFoundError;
+            }
+
+            return wasError;
         }
     }
 }
