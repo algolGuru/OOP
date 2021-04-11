@@ -6,6 +6,11 @@ namespace VolumetricBodies.Bodies
     {
         public Sphere( double radius, double density )
         {
+            if( radius == 0 || density == 0 )
+            {
+                radius = -1;
+                density = -1;
+            }
             _radius = radius;
             Density = density;
             Volume = CountVolume( _radius );

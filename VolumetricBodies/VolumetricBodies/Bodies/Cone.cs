@@ -2,10 +2,16 @@
 
 namespace VolumetricBodies.Bodies
 {
-    class Cone : Body
+    public class Cone : Body
     {
         public Cone( double baseRadius, double height, double density )
         {
+            if( baseRadius == 0 || height == 0 || density == 0 ) 
+            {
+                baseRadius = -1;
+                height = -1;
+                density = -1;
+            }
             _baseRadius = baseRadius;
             _height = height;
             Density = density;

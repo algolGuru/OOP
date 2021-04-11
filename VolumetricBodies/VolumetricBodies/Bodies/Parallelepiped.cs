@@ -1,6 +1,6 @@
 ﻿namespace VolumetricBodies.Bodies
 {
-    class Parallelepiped : Body
+    public class Parallelepiped : Body
     {
         public Parallelepiped(
             double width,
@@ -8,6 +8,13 @@
             double depth,
             double density )
         {
+            if( width == 0 || height == 0 || depth == 0 || density == 0 )
+            {
+                width = -1;
+                height = -1;
+                depth = -1;
+                density = -1;
+            }
             _width = width;
             _height = height;
             _depth = depth;

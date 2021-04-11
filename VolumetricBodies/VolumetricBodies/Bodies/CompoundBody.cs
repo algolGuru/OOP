@@ -10,7 +10,13 @@ namespace VolumetricBodies.Bodies
 
         public CompoundBody( List<Body> bodies )
         {
-            _bodies.AddRange( bodies );
+            foreach( var body in bodies )
+            {
+                if( body.GetVolume() > 0 && body.GetMass() > 0 && body.GetDensity() > 0 )
+                {
+                    _bodies.Add( body );
+                }
+            }
             CountBodyParams( bodies );
         }
 
@@ -21,9 +27,19 @@ namespace VolumetricBodies.Bodies
             return true;
         }
 
+        public List<Body> GetBodies()
+        {
+            return _bodies;
+        }
+
         public override string ToString()
         {
-            string bodyString = "";
+            string bodyString = 
+                "Параметры составного тела: \n" +
+                $"Средняя плотность: {Density} \n" +
+                $"Полная масса: {Mass} \n" +
+                $"Полный объем: {Volume} \n" +
+                $"Входящие тела: \n";
 
             foreach( var body in _bodies )
             {

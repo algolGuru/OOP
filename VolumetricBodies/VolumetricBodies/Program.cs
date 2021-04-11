@@ -59,7 +59,7 @@ namespace VolumetricBodies
                     case 6:
                     {
                         Console.WriteLine();
-                        Console.WriteLine( "Список тел" );
+                        Console.WriteLine( "Список тел:" );
                         isOk = true;
                         PrintInfo( listOfInputBodies );
                         break;
@@ -100,7 +100,10 @@ namespace VolumetricBodies
                     "Добавить составное тело: 5 \n" +
                     "Информация о составном теле: 6 \n" +
                     "Завершить: 10" );
+
                 command = ParseToInt();
+                if( command == 10 )
+                    break;
 
                 var isOk = false;
                 switch( command )
@@ -133,27 +136,30 @@ namespace VolumetricBodies
                     case 6:
                     {
                         Console.WriteLine();
-                        Console.WriteLine( "Список тел в составном теле" );
+                        Console.WriteLine( "Список тел в составном теле:" );
                         isOk = true;
                         PrintInfo( listOfInputBodies );
                         break;
                     }
                 }
 
+                if( listOfInputBodies.Count == 0 )
+                {
+                    isOk = false;
+                }
+
                 if( isOk )
                 {
                     Console.WriteLine( "Тело добавлено!" );
+                    Console.WriteLine();
+                    var newCompaundBody = new CompoundBody( listOfInputBodies );
+                    bodies.Add( newCompaundBody );
                 }
                 else
                 {
                     Console.WriteLine( "Ошибка" );
                 }
             }
-
-            Console.WriteLine();
-
-            var newCompaundBody = new CompoundBody( listOfInputBodies );
-            bodies.Add( newCompaundBody );
 
             return true;
         }
@@ -280,7 +286,7 @@ namespace VolumetricBodies
             {
                 foreach( var body in bodies )
                 {
-                    if (body.GetType() == typeof( CompoundBody ) )
+                    if( body.GetType() == typeof( CompoundBody ) )
                     {
                         Console.WriteLine( "Составное тело:" );
                     }
@@ -301,6 +307,10 @@ namespace VolumetricBodies
             {
                 doubleNumber = -1;
                 Console.WriteLine( "Invalid data" );
+            }
+            if( doubleNumber == 0 )
+            {
+                doubleNumber = -1;
             }
 
             return doubleNumber;

@@ -2,9 +2,9 @@
 {
     public abstract class Body
     {
-        public double Density;
-        public double Volume;
-        public double Mass;
+        protected double Density;
+        protected double Volume;
+        protected double Mass;
 
         public double GetDensity()
         {
