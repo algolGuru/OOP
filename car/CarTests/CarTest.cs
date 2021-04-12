@@ -10,11 +10,11 @@ namespace CarTests
         {
             //Arrange
             Car car = new Car();
-            var engineState = car.GetStateOfEngine();
+            var engineState = car.GetState();
 
             //Act
             car.TurnOnEngine();
-            var newEngineState = car.GetStateOfEngine();
+            var newEngineState = car.GetState();
 
             //Assert
             Assert.NotEqual( engineState, newEngineState );
@@ -26,11 +26,11 @@ namespace CarTests
             //Arrange
             Car car = new Car();
             car.TurnOnEngine();
-            var engineState = car.GetStateOfEngine();
+            var engineState = car.GetState();
 
             //Act
             car.TurnOffEngine();
-            var newEngineState = car.GetStateOfEngine();
+            var newEngineState = car.GetState();
 
             //Assert
             Assert.NotEqual( engineState, newEngineState );
@@ -42,14 +42,14 @@ namespace CarTests
             //Arrange
             Car car = new Car();
             car.TurnOnEngine();
-            var engineState = car.GetStateOfEngine();
+            var engineState = car.GetState();
             car.SetGear( 1 );
             car.SetSpeed( 25 );
             car.SetGear( 0 );
 
             //Act
             car.TurnOffEngine();
-            var newEngineState = car.GetStateOfEngine();
+            var newEngineState = car.GetState();
 
             //Assert
             Assert.Equal( engineState, newEngineState );
@@ -63,11 +63,11 @@ namespace CarTests
             Car car = new Car();
             car.TurnOnEngine();
             car.SetGear( 1 );
-            var speed = car.GetSpeedOfCar();
+            var speed = car.GetSpeed();
 
             //Act
             car.SetSpeed( 20 );
-            var newSpeed = car.GetSpeedOfCar();
+            var newSpeed = car.GetSpeed();
 
             //Assert
             Assert.Equal( 0, speed );
@@ -84,7 +84,7 @@ namespace CarTests
 
             //Act
             car.SetSpeed( 50 );
-            var newSpeed = car.GetSpeedOfCar();
+            var newSpeed = car.GetSpeed();
 
             //Assert
             Assert.Equal( 0, newSpeed );
@@ -102,7 +102,7 @@ namespace CarTests
 
             //Act
             car.SetSpeed( 20 );
-            var newSpeed = car.GetSpeedOfCar();
+            var newSpeed = car.GetSpeed();
 
             //Assert
             Assert.NotEqual( 20, newSpeed );
@@ -122,7 +122,7 @@ namespace CarTests
 
             //Act
             car.SetSpeed( 150 );
-            var speed = car.GetSpeedOfCar();
+            var speed = car.GetSpeed();
 
             //Assert
             Assert.Equal( 150, speed );
@@ -142,7 +142,7 @@ namespace CarTests
 
             //Act
             car.SetSpeed( 151 );
-            var speed = car.GetSpeedOfCar();
+            var speed = car.GetSpeed();
 
             //Assert
             Assert.NotEqual( 151, speed );
@@ -163,7 +163,7 @@ namespace CarTests
 
             //Act
             car.SetGear( 0 );
-            var gear = car.GetGearOfCar();
+            var gear = car.GetGear();
 
             //Assert
             Assert.Equal( 0, gear );
@@ -184,7 +184,7 @@ namespace CarTests
 
             //Act
             car.SetGear( 4 );
-            var gear = car.GetGearOfCar();
+            var gear = car.GetGear();
 
             //Assert
             Assert.NotEqual( 4, gear );
@@ -202,7 +202,7 @@ namespace CarTests
 
             //Act
             car.SetGear( -1 );
-            var gear = car.GetGearOfCar();
+            var gear = car.GetGear();
 
             //Assert
             Assert.NotEqual( -1, gear );
@@ -220,7 +220,7 @@ namespace CarTests
 
             //Act
             car.SetGear( 1 );
-            var gear = car.GetGearOfCar();
+            var gear = car.GetGear();
 
             //Assert
             Assert.NotEqual( 1, gear );
@@ -238,10 +238,28 @@ namespace CarTests
 
             //Act
             car.SetGear( -1 );
-            var gear = car.GetGearOfCar();
+            var gear = car.GetGear();
 
             //Assert
             Assert.NotEqual( -1, gear );
+        }
+
+        [Fact]
+        public void SetDirection_CarHasBackDirectionGear0Speed10TryToGetSpeed10_DirectionIsBack()
+        {
+            //Arrange
+            Car car = new Car();
+            car.TurnOnEngine();
+            car.SetGear( -1 );
+            car.SetSpeed( 10 );
+            car.SetGear( 0 );
+
+            //Act
+            car.SetSpeed( 10 );
+            var direction = car.GetDirection();
+
+            //Assert
+            Assert.Equal( Direction.back, direction);
         }
     }
 }

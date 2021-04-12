@@ -22,22 +22,22 @@
             _gear = 0;
         }
 
-        public bool GetStateOfEngine()
+        public bool GetState()
         {
             return _engineIsRunning;
         }
 
-        public Direction GetDirectionOfCar()
+        public Direction GetDirection()
         {
             return _direction;
         }
 
-        public int GetSpeedOfCar()
+        public int GetSpeed()
         {
             return _speed;
         }
 
-        public int GetGearOfCar()
+        public int GetGear()
         {
             return _gear;
         }
@@ -55,6 +55,10 @@
             {
                 _engineIsRunning = false;
 
+                return true;
+            }
+            else if( _engineIsRunning == false )
+            {
                 return true;
             }
 
@@ -114,20 +118,23 @@
 
             return false;
         }
-
+        //Return после изменения направления!
         private void SwitchDirection( int speed )
         {
-            if( speed > 0 && _gear != -1 )
+            if( speed > 0 && _gear != -1 && _direction != Direction.back )
             {
                 _direction = Direction.forward;
+                return;
             }
             if( speed > 0 && _gear == -1 )
             {
                 _direction = Direction.back;
+                return;
             }
             if( speed == 0 )
             {
                 _direction = Direction.inPlace;
+                return;
             }
         }
 

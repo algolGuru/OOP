@@ -9,10 +9,11 @@ namespace car
             Car car = new Car();
             string command = "";
 
-            Console.WriteLine( "Добро пожаловать в автомобиль, в добрый путь!" );
+            Console.WriteLine( "Добро пожаловать в автомобиль" );
             while( command != "Close" )
             {
                 Console.WriteLine( "Ожидание команды..." );
+                Console.WriteLine( "Close, чтобы закрыть программу" );
                 command = Console.ReadLine();
 
                 if( command.Split( ' ' )[ 0 ] == "SetSpeed" )
@@ -65,7 +66,7 @@ namespace car
         {
             string engineState;
             string directionState;
-            if( car.GetStateOfEngine() == true )
+            if( car.GetState() == true )
             {
                 engineState = "Мотор заведен";
             }
@@ -74,11 +75,11 @@ namespace car
                 engineState = "Мотор загулшен";
             }
 
-            if( car.GetDirectionOfCar() == Direction.forward )
+            if( car.GetDirection() == Direction.forward )
             {
                 directionState = "Автомобиль едет вперед";
             }
-            else if( car.GetDirectionOfCar() == Direction.back )
+            else if( car.GetDirection() == Direction.back )
             {
                 directionState = "Автомобиль едет назад";
             }
@@ -90,8 +91,8 @@ namespace car
             Console.WriteLine( $"Состояние автомобиля: \n" +
                 $" {engineState},\n" +
                 $" {directionState},\n" +
-                $" Скорость автомобиля: {car.GetSpeedOfCar()},\n" +
-                $" Передача : {car.GetGearOfCar()} " );
+                $" Скорость автомобиля: {car.GetSpeed()},\n" +
+                $" Передача : {car.GetGear()} " );
         }
 
         static void SetSpeed( Car car, string command )
@@ -99,7 +100,7 @@ namespace car
             if( command.Split( ' ' )[ 0 ] == "SetSpeed" )
             {
                 var speed = 0;
-                var isOk = true;
+                bool isOk = true;
                 try
                 {
                     speed = int.Parse( command.Split( ' ' )[ 1 ] );
@@ -109,9 +110,12 @@ namespace car
                     isOk = false;
                 }
 
-                if( speed >= 0 && speed <= 150 )
+                if( speed >= 0 && speed <= 150 && isOk)
                 {
                     isOk = car.SetSpeed( speed );
+                } else
+                {
+                    isOk = false;
                 }
 
                 if( isOk == true )
@@ -138,9 +142,13 @@ namespace car
                 isOk = false;
             }
 
-            if( gear >= -1 && gear <= 5 )
+            if( gear >= -1 && gear <= 5 && isOk )
             {
                 isOk = car.SetGear( gear );
+            }
+            else
+            {
+                isOk = false;
             }
 
             if( isOk == true )
