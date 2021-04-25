@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using VolumetricBodies.Bodies;
 using Xunit;
 
@@ -18,10 +17,11 @@ namespace VolumetricBodiesTests
             var cone = new Cone( baseRadius, height, density );
 
             //Act
-            var compaundBody = new CompoundBody( new List<Body> { cone } );
+            var compoundBody = new CompoundBody();
+            compoundBody.AddChildBody( cone );
 
             //Assert
-            Assert.True( compaundBody.GetBodies().Count == 0 );
+            Assert.True( compoundBody.GetBodies().Count == 0 );
         }
 
         [Fact]
@@ -34,10 +34,11 @@ namespace VolumetricBodiesTests
             var cone = new Cone( baseRadius, height, density );
 
             //Act
-            var compaundBody = new CompoundBody( new List<Body> { cone } );
+            var compoundBody = new CompoundBody();
+            compoundBody.AddChildBody( cone );
 
             //Assert
-            Assert.True( compaundBody.GetBodies().Count == 1 );
+            Assert.True( compoundBody.GetBodies().Count == 1 );
         }
 
         [Fact]
@@ -51,14 +52,16 @@ namespace VolumetricBodiesTests
             var cylinder = new Cylinder( baseRadius, height, density );
 
             //Act
-            var compaundBody = new CompoundBody( new List<Body> { cone, cylinder } );
+            var compoundBody = new CompoundBody();
+            compoundBody.AddChildBody( cone );
+            compoundBody.AddChildBody( cylinder );
 
             //Assert
-            Assert.True( compaundBody.GetBodies().Count == 2 );
+            Assert.True( compoundBody.GetBodies().Count == 2 );
         }
 
         [Fact]
-        public void CountBodyParams_CountParamsForValiChildBodies_ReturnBodyParams()
+        public void CountBodyParams_CountParamsForValidChildBodies_ReturnBodyParams()
         {
             //Arange
             var baseRadius = 10;
@@ -68,14 +71,73 @@ namespace VolumetricBodiesTests
             var cylinder = new Cylinder( baseRadius, height, density );
 
             //Act
-            var compaundBody = new CompoundBody( new List<Body> { cone, cylinder } );
+            var compoundBody = new CompoundBody();
+            compoundBody.AddChildBody( cone );
+            compoundBody.AddChildBody( cylinder );
 
             //Assert
-            Assert.True( compaundBody.GetBodies().Count == 2 );
-            Assert.True( Math.Truncate( compaundBody.GetMass() ) == 41887 );
-            Assert.True( Math.Truncate( compaundBody.GetVolume() )== 4188 );
-            Assert.True( Math.Truncate( compaundBody.GetDensity() ) == 10 );
-            
+            Assert.True( compoundBody.GetBodies().Count == 2 );
+            Assert.True( Math.Truncate( compoundBody.GetState().Mass ) == 41887 );
+            Assert.True( Math.Truncate( compoundBody.GetState().Volume ) == 4188 );
+            Assert.True( Math.Truncate( compoundBody.GetState().Density ) == 10 );
+        }
+
+        [Fact]
+        public void CountBodyParams_AddCompaundBodyInCompaundBody_ParamsWasIncremented()
+        {
+            //Arange
+            var baseRadius = 10;
+            var height = 10;
+            var density = 10;
+            var cone = new Cone( baseRadius, height, density );
+            var cylinder = new Cylinder( baseRadius, height, density );
+            var compoundBody = new CompoundBody();
+            var compoundBody2 = new CompoundBody();
+            compoundBody2.AddChildBody( cone );
+            compoundBody2.AddChildBody( cylinder );
+
+
+            //Act
+            compoundBody.AddChildBody( compoundBody2 );
+
+            //Assert
+            Assert.True( compoundBody.GetBodies().Count == 1 );
+            Assert.True( Math.Truncate( compoundBody.GetState().Mass ) == 41887 );
+            Assert.True( Math.Truncate( compoundBody.GetState().Volume ) == 4188 );
+            Assert.True( Math.Truncate( compoundBody.GetState().Density ) == 10 );
+        }
+
+        [Fact]
+        public void AddChildBody_AddThisBody_Error()
+        {
+            ///Arrange
+            var baseRadius = 10;
+            var height = 10;
+            var density = 10;
+            var cone = new Cone( baseRadius, height, density );
+            var compoundBody = new CompoundBody();
+
+            //Assert
+            Assert.True( compoundBody.AddChildBody( cone ) );
+            Assert.False( compoundBody.AddChildBody( compoundBody ) );
+        }
+
+        [Fact]
+        public void AddChildBody_AddThisParentBody_Error()
+        {
+            ///Arrange
+            var baseRadius = 10;
+            var height = 10;
+            var density = 10;
+            var compoundBody1 = new CompoundBody();
+            var cone = new Cone( baseRadius, height, density );
+            var compoundBody = new CompoundBody( compoundBody1 );
+            compoundBody1.AddChildBody( compoundBody );
+
+            //Assert
+            Assert.True( compoundBody.AddChildBody( cone ) );
+            Assert.False( compoundBody.AddChildBody( compoundBody ) );
+            Assert.False( compoundBody.AddChildBody( compoundBody1 ) );
         }
     }
 }

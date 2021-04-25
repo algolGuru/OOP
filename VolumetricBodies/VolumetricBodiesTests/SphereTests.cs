@@ -7,7 +7,7 @@ namespace VolumetricBodiesTests
     public class SphereTests
     {
         [Fact]
-        public void CountVolume_CountSphereVolumeWihZeroParams_Error()
+        public void CreateSphere_CreateSphereWihZeroParams_Error()
         {
             //Arange
             var radius = 0;
@@ -21,7 +21,7 @@ namespace VolumetricBodiesTests
         }
 
         [Fact]
-        public void CountVolume_CountSphereVolume_GetSphere()
+        public void CreateSphere_CreateSphereWithValidParams_GetSphere()
         {
             //Arange
             var baseRadius = 10;

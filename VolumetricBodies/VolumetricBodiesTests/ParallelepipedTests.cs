@@ -7,7 +7,7 @@ namespace VolumetricBodiesTests
     public class ParallelepipedTests
     {
         [Fact]
-        public void CountParallelepipedVolume_CountVolumeWihZeroParams_Error()
+        public void CreateParallelepiped_CreateParallelepipedWihZeroParams_Error()
         {
             //Arange
             var height = 0;
@@ -25,7 +25,7 @@ namespace VolumetricBodiesTests
         }
 
         [Fact]
-        public void CountVolume_CountParallelepipedVolume_GetParallelepiped()
+        public void CreadeParallelepiped_CreateParallelepipedWithValidParams_GetParallelepiped()
         {
             //Arange
             var height = 10;

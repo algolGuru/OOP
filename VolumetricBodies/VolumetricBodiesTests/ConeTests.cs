@@ -7,7 +7,7 @@ namespace VolumetricBodiesTests
     public class ConeTests
     {
         [Fact]
-        public void CountVolume_CountConeVolumeWihZeroParams_Error()
+        public void CreateCone_CreateConeWihZeroParams_Error()
         {
             //Arange
             var baseRadius = 0;
@@ -23,7 +23,7 @@ namespace VolumetricBodiesTests
         }
 
         [Fact]
-        public void CountVolume_CountConeVolume_GetCone()
+        public void CreateCone_CreateConeWithValidParams_GetCone()
         {
             //Arange
             var baseRadius = 10;

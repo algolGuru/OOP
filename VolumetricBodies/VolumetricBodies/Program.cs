@@ -53,7 +53,7 @@ namespace VolumetricBodies
                     }
                     case 5:
                     {
-                        isOk = AddCompoundBody( listOfInputBodies );
+                        isOk = AddCompoundBody( listOfInputBodies, false );
                         break;
                     }
                     case 6:
@@ -82,10 +82,12 @@ namespace VolumetricBodies
             Console.WriteLine();
         }
 
-        public static bool AddCompoundBody( List<Body> bodies )
+        //Compound
+        public static bool AddCompoundBody( List<Body> bodies, bool parentIsCompaund )
         {
             var listOfInputBodies = new List<Body>();
             var command = 0;
+            var isOk = false;
 
             while( command != 10 )
             {
@@ -104,8 +106,7 @@ namespace VolumetricBodies
                 command = ParseToInt();
                 if( command == 10 )
                     break;
-
-                var isOk = false;
+                //Вынести в функцию
                 switch( command )
                 {
                     case 1:
@@ -130,7 +131,7 @@ namespace VolumetricBodies
                     }
                     case 5:
                     {
-                        isOk = AddCompoundBody( listOfInputBodies );
+                        isOk = AddCompoundBody( listOfInputBodies, true );
                         break;
                     }
                     case 6:
@@ -147,18 +148,31 @@ namespace VolumetricBodies
                 {
                     isOk = false;
                 }
-
-                if( isOk )
+            }
+            if( isOk )
+            {
+                Console.WriteLine( "Тело добавлено!" );
+                Console.WriteLine();
+                CompoundBody newCompaundBody;
+                if (parentIsCompaund)
                 {
-                    Console.WriteLine( "Тело добавлено!" );
-                    Console.WriteLine();
-                    var newCompaundBody = new CompoundBody( listOfInputBodies );
-                    bodies.Add( newCompaundBody );
+                    CompoundBody body = ( CompoundBody ) bodies[ ^1 ];
+                    newCompaundBody = new CompoundBody( body );
                 }
                 else
                 {
-                    Console.WriteLine( "Ошибка" );
+                    newCompaundBody = new CompoundBody();
                 }
+
+                foreach(var inputBody in listOfInputBodies )
+                {
+                    newCompaundBody.AddChildBody( inputBody );
+                }
+                bodies.Add( newCompaundBody );
+            }
+            else
+            {
+                Console.WriteLine( "Ошибка" );
             }
 
             return true;

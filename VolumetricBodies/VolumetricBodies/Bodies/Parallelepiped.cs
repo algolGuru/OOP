@@ -1,6 +1,6 @@
 ﻿namespace VolumetricBodies.Bodies
 {
-    public class Parallelepiped : Body
+    public class Parallelepiped : SolidBody
     {
         public Parallelepiped(
             double width,
@@ -46,9 +46,9 @@
         {
             return
                 $"Тип объекта: Параллелепипед \n" +
-                $"Масса тела: {Mass} \n" +
-                $"Объем тела: {Volume} \n" +
-                $"Плотность тела: {Density}";
+                $"  Масса тела: {Mass} \n" +
+                $"  Объем тела: {Volume} \n" +
+                $"  Плотность тела: {Density}";
         }
 
         private double CountVolume( double width, double height, double dept )

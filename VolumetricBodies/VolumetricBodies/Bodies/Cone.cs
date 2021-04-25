@@ -2,7 +2,7 @@
 
 namespace VolumetricBodies.Bodies
 {
-    public class Cone : Body
+    public class Cone : SolidBody
     {
         public Cone( double baseRadius, double height, double density )
         {
@@ -36,9 +36,9 @@ namespace VolumetricBodies.Bodies
         {
             return
                 $"Тип объекта: Конус \n" +
-                $"Масса тела: {Mass} \n" +
-                $"Объем тела: {Volume} \n" +
-                $"Плотность тела: {Density}";
+                $"  Масса тела: {Mass} \n" +
+                $"  Объем тела: {Volume} \n" +
+                $"  Плотность тела: {Density}";
         }
 
         private double CountVolume( double baseRadius, double height )

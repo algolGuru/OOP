@@ -7,7 +7,7 @@ namespace VolumetricBodiesTests
     public class CylinderTests
     {
         [Fact]
-        public void CountVolume_CountCylinderVolumeWihZeroParams_Error()
+        public void CreateCylinder_CreateCylinderWihZeroParams_Error()
         {
             //Arange
             var baseRadius = 0;
@@ -23,7 +23,7 @@ namespace VolumetricBodiesTests
         }
 
         [Fact]
-        public void CountVolume_CountCylinderVolume_GetCylinder()
+        public void CreateCylinder_CreateCylinderWithValidParams_GetCylinder()
         {
             //Arange
             var baseRadius = 10;

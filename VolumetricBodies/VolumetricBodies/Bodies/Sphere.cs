@@ -2,7 +2,7 @@
 
 namespace VolumetricBodies.Bodies
 {
-    public class Sphere : Body
+    public class Sphere : SolidBody
     {
         public Sphere( double radius, double density )
         {
@@ -28,9 +28,9 @@ namespace VolumetricBodies.Bodies
         {
             return
                 $"Тип объекта: Сфера \n" +
-                $"Масса тела: {Mass} \n" +
-                $"Объем тела: {Volume} \n" +
-                $"Плотность тела: {Density}";
+                $"  Масса тела: {Mass} \n" +
+                $"  Объем тела: {Volume} \n" +
+                $"  Плотность тела: {Density}";
         }
 
         private double CountVolume( double radius )

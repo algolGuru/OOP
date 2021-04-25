@@ -1,30 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace VolumetricBodies.Bodies
 {
     public class CompoundBody : Body
     {
         private List<Body> _bodies = new List<Body>();
+        public CompoundBody Parent { get; }
 
-        public CompoundBody( List<Body> bodies )
+        public CompoundBody()
         {
-            foreach( var body in bodies )
-            {
-                if( body.GetVolume() > 0 && body.GetMass() > 0 && body.GetDensity() > 0 )
-                {
-                    _bodies.Add( body );
-                }
-            }
-            CountBodyParams( bodies );
+            Parent = null;
         }
 
-        public bool AddChildBpdy( Body child )
+        public CompoundBody( CompoundBody parent )
         {
-            _bodies.Add( child );
+            Parent = parent;
+        }
 
-            return true;
+        public bool AddChildBody( Body child )
+        {
+            if( !ReferenceEquals( this, child ) )
+            {
+                //is
+                if( ReferenceEquals( GetType(), child.GetType() ) )
+                {
+                    while( true )
+                    {
+                        var link = Parent;
+                        if( link == child )
+                        {
+                            return false;
+                        }
+                        if( link == null )
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                var bodyParms = child.GetState();
+                if( bodyParms.Density > 0 && bodyParms.Mass > 0 && bodyParms.Volume > 0 )
+                {
+                    _bodies.Add( child );
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public List<Body> GetBodies()
@@ -34,11 +56,14 @@ namespace VolumetricBodies.Bodies
 
         public override string ToString()
         {
-            string bodyString = 
-                "Параметры составного тела: \n" +
-                $"Средняя плотность: {Density} \n" +
-                $"Полная масса: {Mass} \n" +
-                $"Полный объем: {Volume} \n" +
+            var bodyParams = GetState();
+
+            string bodyString =
+                "Тип объекта: Составное тело \n" +
+                "   Параметры составного тела: \n" +
+                $"      Средняя плотность: {bodyParams.Density} \n" +
+                $"      Полная масса: {bodyParams.Mass} \n" +
+                $"      Полный объем: {bodyParams.Volume} \n" +
                 $"Входящие тела: \n";
 
             foreach( var body in _bodies )
@@ -49,18 +74,24 @@ namespace VolumetricBodies.Bodies
             return bodyString;
         }
 
-        private void CountBodyParams( List<Body> bodies )
+        public override BodyParams GetState()
         {
-            Mass = 0;
-            Volume = 0;
-
-            foreach( var body in bodies )
+            var bodyParams = new BodyParams
             {
-                Mass += body.GetMass();
-                Volume += body.GetVolume();
+                Density = 0,
+                Mass = 0,
+                Volume = 0
+            };
+
+            foreach( var body in _bodies )
+            {
+                bodyParams.Volume += body.GetState().Volume;
+                bodyParams.Mass += body.GetState().Mass;
             }
 
-            Density = Mass / Volume;
+            bodyParams.Density = bodyParams.Mass / bodyParams.Volume;
+
+            return bodyParams;
         }
     }
 }
