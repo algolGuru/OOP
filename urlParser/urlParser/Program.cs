@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace urlParser
 {
@@ -7,27 +6,32 @@ namespace urlParser
     {
         static void Main( string[] args )
         {
-            var input = File.ReadAllLines( "../../../input.txt" );
-
-            foreach( var line in input )
+            Console.WriteLine( "Введите урлы" );
+            Console.WriteLine( "ctr + z - конец файла" );
+            string line;
+            do
             {
-                try
+                line = Console.ReadLine();
+                if( line != null )
                 {
-                    var url = new HttpUrl( line );
-                    Console.WriteLine( "Результат парсинга урла: " + line );
-                    Console.WriteLine( "Протокол " + url.GetProtocol().ToString() );
-                    Console.WriteLine( "Домен " + url.GetDomain() );
-                    Console.WriteLine( "Порт " + url.GetPort() );
-                    Console.WriteLine( "Документ " + url.GetDocument() );
-                    Console.WriteLine();
+                    try
+                    {
+                        var url = new HttpUrl( line );
+                        Console.WriteLine( "Результат парсинга урла: " + line );
+                        Console.WriteLine( "Протокол " + url.GetProtocol().ToString() );
+                        Console.WriteLine( "Домен " + url.GetDomain() );
+                        Console.WriteLine( "Порт " + url.GetPort() );
+                        Console.WriteLine( "Документ " + url.GetDocument() );
+                        Console.WriteLine();
+                    }
+                    catch( UrlParsingError error )
+                    {
+                        Console.WriteLine( "Результат парсинга урла: " + line );
+                        Console.WriteLine( error.Message );
+                        Console.WriteLine();
+                    }
                 }
-                catch( UrlParsingError error )
-                {
-                    Console.WriteLine( "Результат парсинга урла: " + line );
-                    Console.WriteLine( error.Message );
-                    Console.WriteLine( );
-                }
-            }
+            } while( line != null );
         }
     }
 }

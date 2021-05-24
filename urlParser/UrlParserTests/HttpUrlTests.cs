@@ -90,19 +90,6 @@ namespace UrlParserTests
         }
 
         [Fact]
-        public void ParseUrl_ParseValidUrlWithInvalidPort_ReturnsUrlParseExeption()
-        {
-            //Arrange
-            var domain = "domain";
-            var document = "docs/img/myimg.png";
-            uint port = 0;
-            var url = $"{HttpsProtocol}://{domain}:{port}/{document}";
-
-            // Act & Assert
-            Assert.Throws<UrlParsingError>( () => new HttpUrl( url ) );
-        }
-
-        [Fact]
         public void ParseUrl_ParseUrlWithoutDomain_ReturnsUrlParseExeption()
         {
             //Arrange
@@ -236,10 +223,61 @@ namespace UrlParserTests
             var domain = "";
             var document = "docs/img/myimg.png";
             var protocol = Protocol.HTTPS;
-            uint port = 65356;
+            uint port = 65536;
 
             // Act & Assert
             Assert.Throws<UrlParsingError>( () => new HttpUrl( domain, document, protocol, port ) );
+        }
+
+        [Fact]
+        public void ParseUrl_ParseValidUrlWithInvalidPort_ReturnsUrlParseExeption()
+        {
+            //Arrange
+            var domain = "domain";
+            var document = "docs/img/myimg.png";
+            uint port = 0;
+            var url = $"{HttpsProtocol}://{domain}:{port}/{document}";
+
+            // Act & Assert
+            Assert.Throws<UrlParsingError>( () => new HttpUrl( url ) );
+        }
+
+        [Fact]
+        public void ParseUrl_ParseValidUrlWithValidPort1_ReturnsValidParams()
+        {
+            //Arrange
+            var domain = "domain";
+            var document = "docs/img/myimg.png";
+            uint port = 1;
+            var url = $"{HttpProtocol}://{domain}:{port}/{document}";
+
+            // Act 
+            var parsedUrl = new HttpUrl( url );
+
+            // Assert
+            Assert.Equal( Protocol.HTTP, parsedUrl.GetProtocol() );
+            Assert.Equal( domain, parsedUrl.GetDomain() );
+            Assert.Equal( port, parsedUrl.GetPort() );
+            Assert.Equal( '/' + document, parsedUrl.GetDocument() );
+        }
+
+        [Fact]
+        public void ParseUrl_ParseValidUrlWithValidPort65535_ReturnsValidParams()
+        {
+            //Arrange
+            var domain = "domain";
+            var document = "docs/img/myimg.png";
+            uint port = 65535;
+            var url = $"{HttpProtocol}://{domain}:{port}/{document}";
+
+            // Act 
+            var parsedUrl = new HttpUrl( url );
+
+            // Assert
+            Assert.Equal( Protocol.HTTP, parsedUrl.GetProtocol() );
+            Assert.Equal( domain, parsedUrl.GetDomain() );
+            Assert.Equal( port, parsedUrl.GetPort() );
+            Assert.Equal( '/' + document, parsedUrl.GetDocument() );
         }
     }
 }

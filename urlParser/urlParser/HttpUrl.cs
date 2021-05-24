@@ -19,20 +19,22 @@
 
         public HttpUrl( string url )
         {
-            var protocol = FindProtocol( ref url );
-            _protocol = StringToProtocol( protocol );
+            _protocol = FindProtocol( ref url );
+
             var domain = FindDomain( ref url );
             if( !IsDomainValid( domain ) )
             {
                 throw new UrlParsingError( "Domain invalid" );
             }
             _domain = domain;
+
             var port = FindPort( ref url );
             if( !IsValidPort( port ) )
             {
                 throw new UrlParsingError( "Port invalid" );
             }
             _port = port;
+
             var document = FindDocument( ref url );
             _document = ConvertToValidDocument( document );
         }
@@ -69,7 +71,14 @@
 
         public string GetUrl()
         {
-            return $"{GetProtocol().ToString().ToLower()}://{GetDomain()}:{GetPort()}{GetDocument()}";
+            if( _port != HttpsStandartPort && _port != HttpStandartPort )
+            {
+                return $"{GetProtocol().ToString().ToLower()}://{GetDomain()}:{GetPort()}{GetDocument()}";
+            }
+            else
+            {
+                return $"{GetProtocol().ToString().ToLower()}://{GetDomain()}{GetDocument()}";
+            }
         }
 
         public string GetDomain()
@@ -92,7 +101,7 @@
             return _port;
         }
 
-        private bool IsDomainValid( string domainString )
+        private static bool IsDomainValid( string domainString )
         {
             if( domainString != "" )
             {
@@ -134,7 +143,7 @@
             }
         }
 
-        private string FindProtocol( ref string url )
+        private static Protocol FindProtocol( ref string url )
         {
             var urlString = url.Split( "://" );
             if( urlString.Length != 2 )
@@ -142,10 +151,21 @@
                 throw new UrlParsingError( "Invalid format of url" );
             }
             url = urlString[ 1 ];
-            return urlString[ 0 ].ToLower();
+            var protocol = urlString[ 0 ].ToLower();
+
+            if( protocol == "http" )
+            {
+                return Protocol.HTTP;
+            }
+            else if( protocol == "https" )
+            {
+                return Protocol.HTTPS;
+            }
+
+            throw new UrlParsingError( "Invalid protocol" );
         }
 
-        private string FindDomain( ref string url )
+        private static string FindDomain( ref string url )
         {
             var urlString = url.Split( ':' );
             if( urlString.Length > 2 )
@@ -203,7 +223,7 @@
             }
         }
 
-        private string FindDocument( ref string url )
+        private static string FindDocument( ref string url )
         {
             var urlString = url.Split( '?' );
             if( urlString.Length > 2 )
@@ -211,20 +231,6 @@
                 throw new UrlParsingError( "Invalid format of url" );
             }
             return urlString[ 0 ];
-        }
-
-        private Protocol StringToProtocol( string protocol )
-        {
-            if( protocol == "http" )
-            {
-                return Protocol.HTTP;
-            }
-            else if( protocol == "https" )
-            {
-                return Protocol.HTTPS;
-            }
-
-            throw new UrlParsingError( "Invalid protocol" );
         }
     }
 }
