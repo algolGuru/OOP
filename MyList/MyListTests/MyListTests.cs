@@ -69,18 +69,35 @@ namespace MyListTests
         }
 
         [Fact]
-        public void AddInList_AddInCenter_AddedElementInCenter()
+        public void AddInList_InsertAfter_AddedElementInCenter()
         {
             var list = new MyList<int>();
             list.Add( 3 );
             list.Add( 1 );
 
-            list.AddInCenter( list[ 0 ], 5 );
+            list.InsertAfter( list[ 0 ], 5 );
 
             Assert.Equal( 3, list.GetCount() );
             Assert.Equal( 3, list[ 0 ].GetData() );
             Assert.Equal( 5, list[ 1 ].GetData() );
             Assert.Equal( 1, list[ 2 ].GetData() );
+        }
+
+        [Fact]
+        public void AddInList_InsertBefoore_AddedElementInCenter()
+        {
+            var list = new MyList<int>();
+            list.Add( 3 );
+            list.Add( 1 );
+            list.Add( 4 );
+
+            list.InsertBefore( list[ 1 ], 5 );
+
+            Assert.Equal( 4, list.GetCount() );
+            Assert.Equal( 3, list[ 0 ].GetData() );
+            Assert.Equal( 5, list[ 1 ].GetData() );
+            Assert.Equal( 1, list[ 2 ].GetData() );
+            Assert.Equal( 4, list[ 3 ].GetData() );
         }
 
         [Fact]
@@ -136,7 +153,7 @@ namespace MyListTests
         }
 
         [Fact]
-        public void AddInList_DeleteFromHead_ElementDeleted()
+        public void DeleteFromList_DeleteFromHead_ElementDeleted()
         {
             var list = new MyList<int>() { 1, 2, 3, 4 };
             list.Delete( list[ 0 ] );
@@ -148,7 +165,7 @@ namespace MyListTests
         }
 
         [Fact]
-        public void AddInList_DeleteFromTail_ElementDeleted()
+        public void DeleteFromList_DeleteFromTail_ElementDeleted()
         {
             var list = new MyList<int>() { 1, 2, 3, 4 };
             list.Delete( list[ 3 ] );
@@ -197,6 +214,14 @@ namespace MyListTests
             var list = new MyList<int>() { 1, 2, 3, 4 };
 
             Assert.Throws<IndexOutOfRangeException>( () => list[ 10 ] );
+        }
+
+        [Fact]
+        public void CheckIndexAccess_OutOfRangeLess_ReturnOutOfRangeExeption()
+        {
+            var list = new MyList<int>() { 1, 2, 3, 4 };
+
+            Assert.Throws<IndexOutOfRangeException>( () => list[ -2 ] );
         }
 
         [Fact]

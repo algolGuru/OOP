@@ -14,23 +14,30 @@ namespace MyListLib
             _count = 0;
         }
 
-        //ошибки с пустым списком, lastEl
+        //ошибки с пустым списком, lastEl/ поправил
         public MyList( MyList<T> list )
         {
-            _firstElement = new ListElement<T>( list[ 0 ].GetData() );
-            var curr = _firstElement;
-            for( int i = 0; i < list._count; i++ )
+            if( list.GetCount() == 0 )
             {
-                if( i != 0 )
-                {
-                    var listEl = new ListElement<T>( list[ i ].GetData() );
-                    curr.SetNext( listEl );
-                    listEl.SetPrev( curr );
-                    curr = curr.GetNext();
-                }
+                _count = 0;
             }
+            else
+            { 
+                _firstElement = new ListElement<T>( list[ 0 ].GetData() );
+                var curr = _firstElement;
+                for( int i = 0; i < list._count; i++ )
+                {
+                    if( i != 0 )
+                    {
+                        var listEl = new ListElement<T>( list[ i ].GetData() );
+                        curr.SetNext( listEl );
+                        listEl.SetPrev( curr );
+                        curr = curr.GetNext();
+                    }
+                }
 
-            _count = list.GetCount();
+                _count = list.GetCount();
+            }
         }
 
         public MyList( T data )
@@ -41,12 +48,12 @@ namespace MyListLib
             _count = 1;
         }
 
-        //i > 0 тест написать 
+        //i > 0 тест написать/ поправил написал тест
         public ListElement<T> this[ int i ]
         {
             get
             {
-                if( _count >= i || i < 0 )
+                if( _count > i && i >= 0 )
                 {
                     var current = _firstElement;
                     var counter = 0;
@@ -65,9 +72,9 @@ namespace MyListLib
             }
         }
 
-        //insert after и сделать insert before
+        // insert after и сделать insert before/ поправил написал тест
         // А если элемент чужого списка?
-        public void AddInCenter( ListElement<T> element, T data )
+        public void InsertAfter( ListElement<T> element, T data )
         {
             if( _firstElement == null )
             {
@@ -86,6 +93,30 @@ namespace MyListLib
                 next.SetPrev( listItem );
                 listItem.SetPrev( element );
                 listItem.SetNext( next );
+                _count++;
+            }
+        }
+
+        //добавил написал тест
+        public void InsertBefore( ListElement<T> element, T data )
+        {
+            if( _firstElement == null )
+            {
+                AddInHead( data );
+            }
+            else if( element == _lastElement )
+            {
+                Add( data );
+            }
+            else
+            {
+                var listItem = new ListElement<T>( data );
+
+                var prev = element.GetPrev();
+                element.SetPrev( listItem );
+                prev.SetNext( listItem );
+                listItem.SetNext( element );
+                listItem.SetPrev( prev );
                 _count++;
             }
         }
@@ -134,15 +165,11 @@ namespace MyListLib
 
         public void Delete( ListElement<T> element )
         {
-            // Вспомогательные методы Delete выполняют лишь часть работы (не изменяют _count).
+            // Вспомогательные методы Delete выполняют лишь часть работы (не изменяют _count)/ поправил.
 
             if( _count == 0 )
             {
                 return;
-            }
-            else
-            {
-                _count--;
             }
             if( element == _firstElement )
             {
@@ -191,6 +218,7 @@ namespace MyListLib
                 var next = element.GetNext();
                 prev.SetNext( next );
                 next.SetPrev( prev );
+                _count--;
             }
         }
 
@@ -200,6 +228,7 @@ namespace MyListLib
             {
                 _firstElement.GetNext().SetPrev( null );
                 _firstElement = _firstElement.GetNext();
+                _count--;
             }
         }
 
@@ -209,6 +238,7 @@ namespace MyListLib
             {
                 _lastElement.GetPrev().SetNext( null );
                 _lastElement = _lastElement.GetPrev();
+                _count--;
             }
         }
 

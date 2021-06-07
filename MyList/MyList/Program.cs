@@ -28,7 +28,7 @@ namespace MyList
             {
                 if( item.GetData() == 6 )
                 {
-                    list.AddInCenter( item, 5 );
+                    list.InsertAfter( item, 5 );
                 }
 
                 Console.WriteLine( item );
