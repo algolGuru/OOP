@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MyListLib;
+using System;
+using System.Collections.Generic;
 
 namespace MyList
 {
@@ -6,11 +8,16 @@ namespace MyList
     {
         static void Main( string[] args )
         {
+            var l = new List<int>();
+
             var list = new MyList<int>();
             list.Add( 4 );
             list.Add( 6 );
             list.Add( 2 );
             list.AddInHead( 12 );
+
+            var d = new MyList<int>( list );
+
 
             for( int i = 0; i < list.GetCount(); i++ )
             {

@@ -1,4 +1,5 @@
 using MyList;
+using MyListLib;
 using System;
 using Xunit;
 
@@ -99,17 +100,6 @@ namespace MyListTests
         }
 
         [Fact]
-        public void CheckIndexes()
-        {
-            var list = new MyList<int>() { 1, 2, 3, 4 };
-
-            for( int i = 0; i < list.GetCount(); i++ )
-            {
-                Assert.Equal( list[ i ].GetIndex(), i );
-            }
-        }
-
-        [Fact]
         public void CheckEmumerator()
         {
             var list = new MyList<int>() { 1, 2, 3, 4 };
@@ -181,7 +171,28 @@ namespace MyListTests
         }
 
         [Fact]
-        public void CheckIndexAccess_OutOfRange_ReturnExeption()
+        public void CheckCopyConstructor()
+        {
+            var list = new MyList<int>() { 1, 2, 3, 4 };
+            var list2 = new MyList<int>( list );
+
+
+            Assert.Equal( 1, list[ 0 ].GetData() );
+            Assert.Equal( 2, list[ 1 ].GetData() );
+            Assert.Equal( 3, list[ 2 ].GetData() );
+            Assert.Equal( 4, list[ 3 ].GetData() );
+
+            Assert.Equal( 1, list2[ 0 ].GetData() );
+            Assert.Equal( 2, list2[ 1 ].GetData() );
+            Assert.Equal( 3, list2[ 2 ].GetData() );
+            Assert.Equal( 4, list2[ 3 ].GetData() );
+
+            list.Add( 5 );
+            Assert.True( list2.GetCount() != 5 );
+        }
+
+        [Fact]
+        public void CheckIndexAccess_OutOfRange_ReturnOutOfRangeExeption()
         {
             var list = new MyList<int>() { 1, 2, 3, 4 };
 
